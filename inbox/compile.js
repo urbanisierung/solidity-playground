@@ -1,42 +1,97 @@
 const path = require('path')
-const fs = require('fs')
+// const fs = require('fs')
+const fs = require('fs-extra')
 const solc = require('solc')
 
-const inboxPath = path.resolve(__dirname, 'contracts', 'Inbox.sol')
-const source = fs.readFileSync(inboxPath, 'utf8')
-
-const input = {
-  language: 'Solidity',
-  sources: {
-    'Inbox.sol': {
-      content: source,
-    },
-  },
-  settings: {
-    optimizer: {
-      enabled: true,
-    },
-    outputSelection: {
-      '*': {
-        '*': ['*'],
-      },
-    },
-  },
+function compilingPreperations() {
+  const buildPath = path.resolve(__dirname, 'build')
+  fs.removeSync(buildPath)
+  return buildPath
 }
 
-//   solc.
+function createConfiguration() {
+  return {
+    language: 'Solidity',
+    sources: {
+      'Inbox.sol': {
+        content: fs.readFileSync(
+          path.resolve(__dirname, 'contracts', 'Inbox.sol'),
+          'utf8'
+        ),
+      },
+    },
+    settings: {
+      outputSelection: {
+        // return everything
+        '*': {
+          '*': ['*'],
+        },
+      },
+    },
+  }
+}
 
-// const inbox = JSON.parse(solc.compile(JSON.stringify(input))).contracts.Inbox
-const compiled = JSON.parse(solc.compile(JSON.stringify(input)))
-module.exports = compiled.contracts['Inbox.sol'].Inbox
+function compileSources(config) {
+  try {
+    return JSON.parse(solc.compile(JSON.stringify(config)))
+  } catch (error) {
+    console.log(error)
+  }
+}
 
-// console.log(JSON.parse(solc.compile(JSON.stringify(input))).contracts.Inbox)
+function errorHandling(compiledSources) {
+  if (!compiledSources) {
+    console.error(
+      '>>>>>>>>>>>>>>>>>>>>>>>> ERRORS <<<<<<<<<<<<<<<<<<<<<<<<\n',
+      'NO OUTPUT'
+    )
+  } else if (compiledSources.errors) {
+    // something went wrong.
+    console.error('>>>>>>>>>>>>>>>>>>>>>>>> ERRORS <<<<<<<<<<<<<<<<<<<<<<<<\n')
+    compiledSources.errors.map((error) => console.log(error.formattedMessage))
+  }
+}
 
-// module.exports = JSON.parse(solc.compile(JSON.stringify(input))).contracts.Inbox
+function writeOutput(compiled, buildPath) {
+  fs.ensureDirSync(buildPath)
 
-// console.log(JSON.parse(solc.compile(JSON.stringify(input))))
-// console.log(JSON.parse(solc.compile(input)))
+  for (let contractFileName in compiled.contracts) {
+    const contractName = contractFileName.replace('.sol', '')
+    console.log('Writing: ', `${contractName}.json`)
+    fs.outputJsonSync(
+      path.resolve(buildPath, `${contractName}.json`),
+      compiled.contracts[contractFileName][contractName]
+    )
+  }
+}
 
-// console.log(solc.compile(source, 1))
+const buildPath = compilingPreperations()
+const config = createConfiguration()
+const compiled = compileSources(config)
+errorHandling(compiled)
+writeOutput(compiled, buildPath)
 
-// module.exports = solc.compile(source, 1).contracts[':Inbox']
+// const inboxPath = path.resolve(__dirname, 'contracts', 'Inbox.sol')
+// const source = fs.readFileSync(inboxPath, 'utf8')
+
+// const input = {
+//   language: 'Solidity',
+//   sources: {
+//     'Inbox.sol': {
+//       content: source,
+//     },
+//   },
+//   settings: {
+//     optimizer: {
+//       enabled: true,
+//     },
+//     outputSelection: {
+//       '*': {
+//         '*': ['*'],
+//       },
+//     },
+//   },
+// }
+
+// const compiled = JSON.parse(solc.compile(JSON.stringify(input)))
+// module.exports = compiled.contracts['Inbox.sol'].Inbox

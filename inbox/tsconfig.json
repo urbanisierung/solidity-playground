@@ -13,6 +13,6 @@
       }
     ]
   },
-  "include": ["**/*.ts", "compile.js", "test/Inbox.test.js"],
+  "include": ["**/*.ts", "compile.js"],
   "exclude": ["node_modules", "dist"]
 }
