@@ -13,6 +13,6 @@
       }
     ]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["**/*.ts", "compile.js"],
   "exclude": ["node_modules", "dist"]
 }
