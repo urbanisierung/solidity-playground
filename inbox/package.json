@@ -4,9 +4,7 @@
   "description": "inbox",
   "main": "index.ts",
   "scripts": {
-    "start": "ts-node ./src/index.ts",
-    "build": "tsc --p tsconfig.json",
-    "dist": "node dist/index.js",
+    "compile": "ts-node compile.ts",
     "test": "jest --config jest.config.ts"
   },
   "author": "adam.urban@gmail.com",
