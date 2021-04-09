@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-const compiled = require('./build/Lottery')
+const compiled = require('./build/CampaignFactory')
 
 const provider = new HDWalletProvider({
   mnemonic: {
@@ -24,7 +24,7 @@ async function deploy() {
     .deploy({
       data: `0x${compiled.evm.bytecode.object}`,
     })
-    .send({ gas: 1000000, from: accounts[0] })
+    .send({ gas: 3000000, from: accounts[0] })
 
   console.log('Contract deployed to', result.options.address)
 }

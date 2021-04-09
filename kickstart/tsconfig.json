@@ -5,14 +5,38 @@
     "target": "es2017",
     "outDir": "./dist",
     "baseUrl": "./src",
-    "types": ["node", "jest"],
+    "types": [
+      "node",
+      "jest"
+    ],
     "esModuleInterop": true,
     "plugins": [
       {
         "name": "typescript-tslint-plugin"
       }
-    ]
+    ],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve"
   },
-  "include": ["**/*.ts", "compile.js"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "**/*.ts",
+    "compile.js",
+    "pages/index.js"
+, "server.ts.disabled", "pages/campaigns/new.js"  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
